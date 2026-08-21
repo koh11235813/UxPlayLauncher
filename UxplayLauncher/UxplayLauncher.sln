@@ -5,6 +5,10 @@ VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UxplayLauncher", "UxplayLauncher\UxplayLauncher.csproj", "{8B61F162-BA9C-4C8D-899F-BF0223555077}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UxplayLauncher.LaunchContract", "UxplayLauncher.LaunchContract\UxplayLauncher.LaunchContract.csproj", "{A8DCE6D2-5F27-4B2F-9A2B-5D6A3F719C40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UxplayLauncher.LaunchContract.Tests", "UxplayLauncher.LaunchContract.Tests\UxplayLauncher.LaunchContract.Tests.csproj", "{C3A7F28E-72D6-48B0-9E4B-1C5D8A639F21}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -15,6 +19,14 @@ Global
 		{8B61F162-BA9C-4C8D-899F-BF0223555077}.Debug|x64.Build.0 = Debug|x64
 		{8B61F162-BA9C-4C8D-899F-BF0223555077}.Release|x64.ActiveCfg = Release|x64
 		{8B61F162-BA9C-4C8D-899F-BF0223555077}.Release|x64.Build.0 = Release|x64
+		{A8DCE6D2-5F27-4B2F-9A2B-5D6A3F719C40}.Debug|x64.ActiveCfg = Debug|x64
+		{A8DCE6D2-5F27-4B2F-9A2B-5D6A3F719C40}.Debug|x64.Build.0 = Debug|x64
+		{A8DCE6D2-5F27-4B2F-9A2B-5D6A3F719C40}.Release|x64.ActiveCfg = Release|x64
+		{A8DCE6D2-5F27-4B2F-9A2B-5D6A3F719C40}.Release|x64.Build.0 = Release|x64
+		{C3A7F28E-72D6-48B0-9E4B-1C5D8A639F21}.Debug|x64.ActiveCfg = Debug|x64
+		{C3A7F28E-72D6-48B0-9E4B-1C5D8A639F21}.Debug|x64.Build.0 = Debug|x64
+		{C3A7F28E-72D6-48B0-9E4B-1C5D8A639F21}.Release|x64.ActiveCfg = Release|x64
+		{C3A7F28E-72D6-48B0-9E4B-1C5D8A639F21}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
