@@ -24,10 +24,30 @@ _Avoid_: portable（runtime bundleが自己完結していることを検証し�
 解像度、FPS、音声、映像sink、アクセス制御など、UxPlay hostの一回の起動に使う利用者向けの設定です。利用者が意味を選び、UxPlay固有のコマンドライン表現は内部で解決されるものとします。
 _Avoid_: raw flags、command string（利用者向け概念として）
 
+### Launch contract
+
+対応対象として固定したUxPlay releaseに対して、Launch profileの各選択が持つ意味、有効な値、起動時の効果を定める約束です。利用者向けの意味とUxPlay固有の起動表現が一致し、対応しない選択はLaunch profileに含めません。
+_Avoid_: flag mapping（利用者向けの意味や検証を含まない場合）、latest UxPlay behavior（対応releaseを固定していない場合）
+
+### Expert override
+
+Launch contractが生成する起動指示を、UxPlay固有の任意の引数で意図的に上書きまたは拡張する上級者向け入力です。引数の意味と対象releaseでの有効性は利用者が引き受けますが、安全なprocess受け渡しとDiagnostic logからの秘匿はシステムが保証します。
+_Avoid_: Launch profile（contractによる意味と値の検証を受けないため）、custom arguments（保証範囲を区別しない場合）
+
 ### Readiness
 
 UxPlay hostを起動できるかを表す状態です。実行ファイル、runtime bundle、GStreamer plugin、設定値、ネットワーク準備の検査結果を含みます。
 _Avoid_: path found（実行ファイルが見つかっただけの状態）
+
+### Ready runtime
+
+Readinessの検査を通過し、対象のLaunch contractと互換性が確認されたUxPlay hostの実行環境です。実行ファイル、native library、GStreamer pluginが一つの検証済みruntime bundleとして識別されます。
+_Avoid_: executable path（実行ファイルの場所だけを確認した場合）、installed MSYS2（必要な実行時依存関係を検証していない場合）
+
+### Launch workspace
+
+UxPlay hostの一回の起動が生成するログ、録画、dump、exportなどの可変出力を受け取る、利用者が書き込み可能な作業領域です。不変のruntime bundleとは分離され、相対パスで出力を書くUxPlayオプションはこの領域を基準に解決されます。
+_Avoid_: install directory（runtime bundleの配置場所）、current directory（呼び出し元の偶然の状態）
 
 ### Diagnostic log
 
@@ -81,6 +101,7 @@ root READMEとnested READMEは同じclone、build、runtime前提を説明しな
 - 見つかった主な改善候補: Runtime bundle、Build ownership、Launch contract、Process lifecycle、Operator UI、Release provenance
 - Windows向けWPFの実ビルドと実機AirPlay接続は、監査環境がmacOSで.NET SDKとWindows toolchainを持たないため未検証
 - 詳細な候補比較とbefore/after図: `/private/var/folders/4p/c6d6mn915yngx55y3qqcybf00000gn/T/architecture-review-20260820_014450.html`
+- 2026-08-21: Launch contract の grilling 完了。設計は `docs/design/launch-contract.md` に記録（対象: FDH2/UxPlay v1.73.6 = `21eef8df`、実装は未着手）
 
 ## External references
 
