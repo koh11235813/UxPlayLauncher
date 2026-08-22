@@ -6,7 +6,7 @@ namespace UxplayLauncher.LaunchContract.Tests;
 public sealed class LaunchProfileTests
 {
   [Fact]
-  public void CreateDefault_returns_the_v1736_operator_defaults()
+  public void DefaultProfileUsesV1736Values()
   {
     LaunchProfile profile = LaunchProfile.CreateDefault();
 
@@ -27,7 +27,7 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Constructor_preserves_accepted_values_immutably()
+  public void AcceptedValuesRemainUnchanged()
   {
     var recording = new Mp4Recording("capture.mp4");
     var audioOutput = new AudioOutput.Sink("custom sink");
@@ -70,7 +70,7 @@ public sealed class LaunchProfileTests
   [InlineData("1920x1080@256")]
   [InlineData("１９２０x１０８０")]
   [InlineData("1920/1080")]
-  public void Constructor_rejects_invalid_resolution(string resolution)
+  public void InvalidResolutionIsRejected(string resolution)
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         CreateProfile(resolution: resolution));
@@ -82,7 +82,7 @@ public sealed class LaunchProfileTests
   [Theory]
   [InlineData(0)]
   [InlineData(256)]
-  public void Constructor_rejects_max_fps_outside_the_closed_range(int maxFps)
+  public void FpsOutsideRangeIsRejected(int maxFps)
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         CreateProfile(maxFps: maxFps));
@@ -95,7 +95,7 @@ public sealed class LaunchProfileTests
   [InlineData(1023)]
   [InlineData(65534)]
   [InlineData(65535)]
-  public void Constructor_rejects_base_port_that_cannot_fit_three_ports(int basePort)
+  public void BasePortWithoutThreePortsIsRejected(int basePort)
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         CreateProfile(basePort: basePort));
@@ -107,7 +107,7 @@ public sealed class LaunchProfileTests
   [Theory]
   [InlineData(-0.01)]
   [InlineData(10.01)]
-  public void Constructor_rejects_audio_latency_outside_the_closed_range(double latency)
+  public void AudioLatencyOutsideRangeIsRejected(double latency)
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         CreateProfile(audioLatencySeconds: (decimal)latency));
@@ -117,14 +117,14 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Constructor_accepts_audio_latency_boundaries()
+  public void AudioLatencyBoundsAreAccepted()
   {
     Assert.Equal(0m, CreateProfile(audioLatencySeconds: 0m).AudioLatencySeconds);
     Assert.Equal(10m, CreateProfile(audioLatencySeconds: 10m).AudioLatencySeconds);
   }
 
   [Fact]
-  public void Constructor_accepts_resolution_fps_and_base_port_boundaries()
+  public void NumericBoundsAreAccepted()
   {
     Assert.Equal("1x1@1", CreateProfile(resolution: "1x1@1", maxFps: 1, basePort: 1024).Resolution);
 
@@ -139,7 +139,7 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Constructor_accepts_disabled_audio_without_a_sink()
+  public void DisabledAudioWithoutSinkIsAccepted()
   {
     Assert.IsType<AudioOutput.Disabled>(CreateProfile(audioOutput: new AudioOutput.Disabled()).AudioOutput);
   }
@@ -147,13 +147,13 @@ public sealed class LaunchProfileTests
   [Theory]
   [InlineData(null)]
   [InlineData("")]
-  public void Null_or_empty_password_is_normalized_to_unspecified(string? password)
+  public void MissingPasswordBecomesUnspecified(string? password)
   {
     Assert.Null(CreateProfile(password: password).Password);
   }
 
   [Fact]
-  public void Password_length_counts_unicode_scalars_and_preserves_the_accepted_value()
+  public void PasswordLengthUsesUnicodeScalars()
   {
     string password = "😀😀😀😀😀😀";
 
@@ -163,7 +163,7 @@ public sealed class LaunchProfileTests
   [Theory]
   [InlineData("12345")]
   [InlineData("😀😀😀😀😀")]
-  public void Constructor_rejects_passwords_shorter_than_six_unicode_scalars(string password)
+  public void ShortPasswordIsRejected(string password)
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         CreateProfile(password: password));
@@ -173,19 +173,19 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Constructor_rejects_nul_in_argv_and_path_strings()
+  public void NulIsRejectedInArgumentsAndPaths()
   {
     AssertInvalidArgvAndPathString("bad\0value");
   }
 
   [Fact]
-  public void Constructor_rejects_unpaired_high_surrogate_in_argv_and_path_strings()
+  public void UnpairedHighSurrogateIsRejected()
   {
     AssertInvalidArgvAndPathString("bad\ud800value");
   }
 
   [Fact]
-  public void Constructor_rejects_unpaired_low_surrogate_in_argv_and_path_strings()
+  public void UnpairedLowSurrogateIsRejected()
   {
     AssertInvalidArgvAndPathString("bad\udfffvalue");
   }
@@ -193,7 +193,7 @@ public sealed class LaunchProfileTests
   [Theory]
   [InlineData("")]
   [InlineData("   ")]
-  public void Constructor_rejects_empty_or_whitespace_device_name(string deviceName)
+  public void BlankDeviceNameIsRejected(string deviceName)
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         CreateProfile(deviceName: deviceName));
@@ -205,7 +205,7 @@ public sealed class LaunchProfileTests
   [Theory]
   [InlineData("")]
   [InlineData("   ")]
-  public void Constructor_rejects_empty_or_whitespace_audio_sink(string sink)
+  public void BlankAudioSinkIsRejected(string sink)
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         CreateProfile(audioOutput: new AudioOutput.Sink(sink)));
@@ -217,7 +217,7 @@ public sealed class LaunchProfileTests
   [Theory]
   [InlineData("")]
   [InlineData("   ")]
-  public void Constructor_rejects_empty_or_whitespace_video_sink(string sink)
+  public void BlankVideoSinkIsRejected(string sink)
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         CreateProfile(videoSink: sink));
@@ -227,7 +227,7 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Constructor_aggregates_null_required_inputs()
+  public void MissingRequiredValuesAreAggregated()
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         new LaunchProfile(
@@ -263,7 +263,7 @@ public sealed class LaunchProfileTests
   [InlineData("C:\\capture.mp4")]
   [InlineData("//server/share/capture.mp4")]
   [InlineData("\\\\server\\share\\capture.mp4")]
-  public void Constructor_rejects_recording_filename_that_can_escape_workspace(string fileName)
+  public void EscapingRecordingPathIsRejected(string fileName)
   {
     LaunchProfileValidationException exception = Assert.Throws<LaunchProfileValidationException>(() =>
         CreateProfile(recording: new Mp4Recording(fileName)));
@@ -273,13 +273,13 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Constructor_accepts_a_plain_recording_filename()
+  public void PlainRecordingNameIsAccepted()
   {
     Assert.Equal("capture.mp4", CreateProfile(recording: new Mp4Recording("capture.mp4")).Recording?.FileName);
   }
 
   [Fact]
-  public void Constructor_preserves_surrounding_whitespace_and_quotes_in_string_flags()
+  public void FlagWhitespaceAndQuotesArePreserved()
   {
     const string deviceName = " \"Living Room\" ";
     const string audioSink = " custom audio sink ";
@@ -296,7 +296,7 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Mp4_recording_with_null_filename_remains_enabled_with_default_filename()
+  public void NullRecordingNameKeepsRecordingEnabled()
   {
     var recording = new Mp4Recording(null);
 
@@ -308,7 +308,7 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Constructor_accepts_a_nested_relative_recording_filename()
+  public void NestedRecordingNameIsAccepted()
   {
     const string fileName = "captures/session 1/capture.mp4";
 
@@ -316,7 +316,7 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Aggregate_violations_are_in_fixed_field_order_and_do_not_contain_password()
+  public void ViolationsHaveStableOrderAndHidePassword()
   {
     const string secret = "秘密abc";
 
@@ -344,7 +344,7 @@ public sealed class LaunchProfileTests
   }
 
   [Fact]
-  public void Audio_output_hierarchy_is_closed_to_external_derivation()
+  public void AudioOutputCannotBeExtendedExternally()
   {
     Assert.True(typeof(AudioOutput).IsAbstract);
     Assert.True(typeof(AudioOutput.Disabled).IsSealed);
