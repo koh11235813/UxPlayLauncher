@@ -35,7 +35,7 @@ cd build
 
 echo "=== CMake でビルド設定を生成中 ==="
 # cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ ..
-cmake ..
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release ..
 
 echo "=== UxPlay をビルド中 ==="
 cmake --build . --config Release -j$(nproc)

@@ -5,38 +5,11 @@ on:
   pull_request:
 
 jobs:
-  build-win:
-    runs-on: windows-latest
-    env:
-      CI: "true"
+  launch-contract-tests:
+    name: launch contract tests
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      - name: Setup MSYS2 (MinGW64)
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: MINGW64
-          install: >-
-            git
-            mingw-w64-x86_64-gcc
-            mingw-w64-x86_64-cmake
-            mingw-w64-x86_64-ninja
-            mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-openssl
-            mingw-w64-x86_64-libplist
-            mingw-w64-x86_64-gstreamer
-            mingw-w64-x86_64-gst-plugins-base
-            mingw-w64-x86_64-gst-plugins-good
-            mingw-w64-x86_64-gst-plugins-bad
-            mingw-w64-x86_64-gst-libav
-
-      - name: Build uxplay (MinGW64)
-        shell: bash
-        run: |
-          set -euxo pipefail
-          ./UxplayLauncher/scripts/build-uxplay-github-actions.sh
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v4
@@ -44,20 +17,9 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore
-        run: dotnet restore ./UxplayLauncher/UxplayLauncher/UxplayLauncher.csproj
+        run: dotnet restore ./UxplayLauncher/UxplayLauncher.LaunchContract.Tests/UxplayLauncher.LaunchContract.Tests.csproj
 
-      - name: Publish (self-contained)
+      - name: Test
         run: >-
-          dotnet publish ./UxplayLauncher/UxplayLauncher/UxplayLauncher.csproj -c Release
-          -r win-x64 -p:PublishSingleFile=true -p:SelfContained=true
-          -o ./artifacts/win-x64
-
-      - name: Copy uxplay.exe into artifact
-        run: |
-          copy ./third_party/uxplay.exe artifacts/win-x64/uxplay.exe
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: UxplayLauncher-with-uxplay-win-x64
-          path: artifacts/win-x64
+          dotnet test ./UxplayLauncher/UxplayLauncher.LaunchContract.Tests/UxplayLauncher.LaunchContract.Tests.csproj
+          -c Release --no-restore --verbosity minimal -p:TreatWarningsAsErrors=true

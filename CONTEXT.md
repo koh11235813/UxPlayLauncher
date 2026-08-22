@@ -56,7 +56,7 @@ _Avoid_: raw process output（利用者向けの意味付けをしない場合�
 
 ### Build artifact
 
-特定のUxPlay source commit、toolchain、runtime bundle、launcher publish結果から生成され、検査可能な配布物です。build artifactは再現可能で、含まれる依存関係とライセンスを追跡できる必要があります。
+特定のUxPlay source commit、toolchain、runtime bundle、launcher publish結果から生成され、provenanceと内容を検査できる配布物です。全入力を固定していないartifactを「再現可能」と呼ばず、source、toolchain、runner image、外部SDK、依存関係、ライセンス、file hashを追跡できる状態と区別します。
 _Avoid_: executable（UxPlay単体だけを指す場合）
 
 ## Established findings
@@ -87,7 +87,7 @@ UI、Launch profileの収集、引数の組み立て、環境変数、runtime準
 
 ### CI is part of the product contract
 
-CIは単にlauncherをcompileする場所ではなく、Build artifactの再現性、runtime dependency、GStreamer plugin、ライセンス通知、最小起動を検査する場所です。現状はWindows向け実行をmacOS上で完全検証できないため、Windows runnerでの明示的なsmoke testが必要です。
+CIは単にlauncherをcompileする場所ではなく、Build artifactのprovenance、runtime dependency、GStreamer plugin、ライセンス通知、最小起動を検査する場所です。全入力を固定した場合だけ再現可能性を主張し、Windows向け実行はWindows runnerで明示的にsmoke testします。
 
 ### Documentation is a source of truth
 
@@ -101,7 +101,7 @@ root READMEとnested READMEは同じclone、build、runtime前提を説明しな
 - 見つかった主な改善候補: Runtime bundle、Build ownership、Launch contract、Process lifecycle、Operator UI、Release provenance
 - Windows向けWPFの実ビルドと実機AirPlay接続は、監査環境がmacOSで.NET SDKとWindows toolchainを持たないため未検証
 - 詳細な候補比較とbefore/after図: `/private/var/folders/4p/c6d6mn915yngx55y3qqcybf00000gn/T/architecture-review-20260820_014450.html`
-- 2026-08-21: Launch contract の grilling 完了。設計は `docs/design/launch-contract.md` に記録（対象: FDH2/UxPlay v1.73.6 = `21eef8df`、実装は未着手）
+- 2026-08-21: Launch contract の grilling 完了。設計と移行状態は `docs/design/launch-contract.md` に記録（対象: FDH2/UxPlay v1.73.6 = `21eef8df`）
 
 ## External references
 
