@@ -33,7 +33,7 @@ jobs:
             mingw-w64-x86_64-gst-libav
 
       - name: Build uxplay (MinGW64)
-        shell: bash
+        shell: msys2 {0}
         run: |
           set -euxo pipefail
           ./UxplayLauncher/scripts/build-uxplay-github-actions.sh
